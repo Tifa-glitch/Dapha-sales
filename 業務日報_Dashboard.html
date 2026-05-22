@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>業務日報 Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text: #1a1a1a;
+  --text2: #6b7280;
+  --text3: #9ca3af;
+  --red: #c0152a;
+  --red-dim: rgba(192,21,42,0.08);
+  --red-mid: rgba(192,21,42,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Noto Sans TC', sans-serif; font-size: 14px; line-height: 1.6; min-height: 100vh; }
+
+/* ── top bar ── */
+.topbar { background: #c0152a; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.logo-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 8px rgba(255,255,255,0.6); }
+.topbar-title { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; color: #fff; }
+.topbar-sub { font-size: 12px; color: rgba(255,255,255,0.65); font-family: 'DM Mono', monospace; }
+.last-updated { font-size: 11px; color: rgba(255,255,255,0.65); font-family: 'DM Mono', monospace; }
+.refresh-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.35); color: #fff; font-size: 12px; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-family: 'Noto Sans TC', sans-serif; transition: all 0.15s; }
+.refresh-btn:hover { background: rgba(255,255,255,0.28); }
+
+/* ── dept tabs ── */
+.dept-bar { background: #f9fafb; border-bottom: 1px solid var(--border2); padding: 0 24px; display: flex; align-items: center; gap: 0; }
+.dept-tab { padding: 12px 24px; font-size: 14px; font-weight: 500; cursor: pointer; border-bottom: 3px solid transparent; color: var(--text2); transition: all 0.15s; font-family: 'Noto Sans TC', sans-serif; }
+.dept-tab:hover { color: var(--red); }
+.dept-tab.active { color: var(--red); border-bottom-color: var(--red); font-weight: 700; }
+
+/* ── layout ── */
+.main { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
+
+/* ── metric tabs ── */
+.tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+.tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; cursor: pointer; border: 1px solid var(--border2); color: var(--text2); background: transparent; transition: all 0.15s; font-family: 'Noto Sans TC', sans-serif; }
+.tab:hover { border-color: var(--red); color: var(--red); }
+.tab.active { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+
+/* ── summary cards ── */
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.scard { background: #fff5f5; border: 1px solid rgba(192,21,42,0.15); border-radius: 10px; padding: 16px; }
+.scard-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+.scard-val { font-size: 26px; font-weight: 700; font-family: 'DM Mono', monospace; line-height: 1; margin-bottom: 4px; color: var(--red); }
+.scard-sub { font-size: 11px; color: var(--text2); }
+
+/* ── two col layout ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+@media (max-width: 680px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ── panel ── */
+.panel { background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 10px; padding: 18px; }
+.panel-title { font-size: 11px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+
+/* ── progress bars ── */
+.prow { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.prow:last-child { margin-bottom: 0; }
+.pname { font-size: 13px; font-weight: 500; min-width: 44px; }
+.pbar-bg { flex: 1; height: 6px; background: #f3f4f6; border-radius: 3px; overflow: hidden; }
+.pbar { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+.ppct { font-size: 12px; font-family: 'DM Mono', monospace; min-width: 38px; text-align: right; }
+.pval { font-size: 11px; color: var(--text3); min-width: 68px; text-align: right; font-family: 'DM Mono', monospace; }
+.badge-ok   { color: #16a34a; }
+.badge-mid  { color: #c0152a; }
+.badge-low  { color: #dc2626; }
+.badge-none { color: var(--text3); }
+
+/* ── chart canvas ── */
+.chart-wrap { position: relative; width: 100%; height: 200px; }
+
+/* ── ranking list (no-target) ── */
+.region-block { margin-bottom: 14px; }
+.region-block:last-child { margin-bottom: 0; }
+.region-label { font-size: 11px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.07em; padding: 0 0 6px 8px; margin-bottom: 4px; }
+.rank-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
+.rank-row:last-child { border-bottom: none; }
+.rank-name { font-size: 13px; font-weight: 500; flex: 1; }
+.rank-bar-bg { width: 120px; height: 5px; background: #f3f4f6; border-radius: 3px; overflow: hidden; }
+.rank-bar { height: 100%; border-radius: 3px; }
+.rank-val { font-size: 13px; font-family: 'DM Mono', monospace; color: var(--text); min-width: 80px; text-align: right; }
+
+/* ── loading / error ── */
+.state-box { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; gap: 12px; color: var(--text3); }
+.spinner { width: 28px; height: 28px; border: 2px solid #fee2e2; border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.note { font-size: 11px; color: var(--text3); margin-bottom: 12px; }
+.footer { text-align: center; padding: 32px 20px 20px; font-size: 11px; color: var(--text3); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ TOP BAR ══════════════ -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo-dot"></div>
+    <span class="topbar-title">大法業務日報</span>
+    <span class="topbar-sub">DASHBOARD</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="last-updated" id="lastUpdated">載入中...</span>
+    <button class="refresh-btn" onclick="loadData()">重新整理</button>
+  </div>
+</div>
+
+<!-- ══════════════ DEPT TABS ══════════════ -->
+<div class="dept-bar">
+  <div class="dept-tab active" id="deptTab1" onclick="switchDept(1)">淺一部</div>
+  <div class="dept-tab" id="deptTab2" onclick="switchDept(2)">淺二部</div>
+</div>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<div class="main">
+  <div class="tabs" id="metricTabs"></div>
+  <div class="summary-grid" id="summaryCards"></div>
+  <div id="mainContent">
+    <div class="state-box"><div class="spinner"></div><span>載入資料中...</span></div>
+  </div>
+</div>
+
+<div class="footer">業務日報系統 · 資料來源：Google Sheets · 每次開啟自動更新</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ══════════════════════════════════════════════
+//  ★ 設定區
+// ══════════════════════════════════════════════
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyRzfFIqxmittcZoRwC8t0IYmqUlasCln9XgJXiPWIhYMzCcfUkzgEkeeJHchNFjUUHA/exec';
+
+// ══════════════════════════════════════════════
+//  各部門設定
+// ══════════════════════════════════════════════
+const DEPT_CONFIG = {
+  1: {
+    label: '淺一部',
+    regions: [
+      { label: '北區', names: ['陳俊禹','林星樺','林宗德','陳永翰','楊承凱','賞天佑'] },
+      { label: '中區', names: ['陳坤謨','魏鴻茂','吳駿宏'] },
+      { label: '南區', names: ['李仲亨','鄭舜生','陳志建'] },
+    ],
+    metrics: [
+      { key:'ad_recv_new',  label:'廣告收款今日新增', unit:'元',  hasTarget:false, type:'new'  },
+      { key:'ad_recv_cum',  label:'廣告收款累計',     unit:'元',  hasTarget:false, type:'cum'  },
+      { key:'s1_recv_new',  label:'淺一收款今日新增', unit:'元',  hasTarget:false, type:'new'  },
+      { key:'s1_recv_cum',  label:'淺一收款累計',     unit:'元',  hasTarget:false, type:'cum'  },
+      { key:'orders',       label:'訂單家數',         unit:'家',  hasTarget:false, type:'new'  },
+      { key:'ratio_prod',   label:'佔比產品數',       unit:'家',  hasTarget:false, type:'new'  },
+      { key:'banq_cum',     label:'88宴會口累計',     unit:'口',  hasTarget:false, type:'cum'  },
+      { key:'cystine_cum',  label:'胱白錠家數',       unit:'家',  hasTarget:true,  type:'cum'  },
+    ],
+    fallbackRaw: [
+      {date:'05/21',name:'林宗德',  ad_recv_new:20000,ad_recv_cum:20000,s1_recv_new:60000,s1_recv_cum:60000,orders:5,ratio_prod:2,banq_cum:5,  cystine_cum:0},
+      {date:'05/21',name:'楊承凱',  ad_recv_new:60000,ad_recv_cum:60000,s1_recv_new:53924,s1_recv_cum:53924,orders:2,ratio_prod:5,banq_cum:0,  cystine_cum:0},
+      {date:'05/21',name:'魏鴻茂',  ad_recv_new:0,    ad_recv_cum:0,    s1_recv_new:80000,s1_recv_cum:80000,orders:4,ratio_prod:1,banq_cum:11.5,cystine_cum:0},
+      {date:'05/21',name:'吳駿宏',  ad_recv_new:100000,ad_recv_cum:100000,s1_recv_new:0,  s1_recv_cum:0,    orders:2,ratio_prod:0,banq_cum:5,  cystine_cum:0},
+      {date:'05/21',name:'陳志建',  ad_recv_new:0,    ad_recv_cum:0,    s1_recv_new:60000,s1_recv_cum:60000,orders:5,ratio_prod:3,banq_cum:8,  cystine_cum:0},
+      {date:'05/21',name:'陳俊禹',  ad_recv_new:0,    ad_recv_cum:0,    s1_recv_new:0,    s1_recv_cum:0,    orders:7,ratio_prod:1,banq_cum:11.5,cystine_cum:0},
+      {date:'05/21',name:'林星樺',  ad_recv_new:0,    ad_recv_cum:0,    s1_recv_new:0,    s1_recv_cum:0,    orders:6,ratio_prod:3,banq_cum:3.5, cystine_cum:0},
+      {date:'05/21',name:'陳永翰',  ad_recv_new:0,    ad_recv_cum:0,    s1_recv_new:0,    s1_recv_cum:0,    orders:4,ratio_prod:3,banq_cum:5,  cystine_cum:0},
+      {date:'05/21',name:'賞天佑',  ad_recv_new:0,    ad_recv_cum:0,    s1_recv_new:0,    s1_recv_cum:0,    orders:4,ratio_prod:1,banq_cum:3,  cystine_cum:0},
+      {date:'05/21',name:'陳坤謨',  ad_recv_new:0,    ad_recv_cum:0,    s1_recv_new:0,    s1_recv_cum:0,    orders:5,ratio_prod:0,banq_cum:7.5, cystine_cum:0},
+      {date:'05/21',name:'李仲亨',  ad_recv_new:0,    ad_recv_cum:0,    s1_recv_new:0,    s1_recv_cum:0,    orders:5,ratio_prod:1,banq_cum:4.5, cystine_cum:0},
+      {date:'05/21',name:'鄭舜生',  ad_recv_new:0,    ad_recv_cum:0,    s1_recv_new:0,    s1_recv_cum:0,    orders:5,ratio_prod:1,banq_cum:4,  cystine_cum:0},
+    ],
+    fallbackTargets: {
+      '陳俊禹': { cystine_cum: 18 }, '林星樺': { cystine_cum: 18 }, '林宗德': { cystine_cum: 18 },
+      '陳永翰': { cystine_cum: 18 }, '楊承凱': { cystine_cum: 18 }, '賞天佑': { cystine_cum: 18 },
+      '陳坤謨': { cystine_cum: 18 }, '魏鴻茂': { cystine_cum: 18 }, '吳駿宏': { cystine_cum: 18 },
+      '李仲亨': { cystine_cum: 18 }, '鄭舜生': { cystine_cum: 18 }, '陳志建': { cystine_cum: 18 },
+    }
+  },
+  2: {
+    label: '淺二部',
+    regions: [
+      { label: '北區', names: ['郭嘉龍','邱建銘','侯福正','徐宏杰','游皓明'] },
+      { label: '中區', names: ['范國隆','林俊毅'] },
+      { label: '南區', names: ['張詠順','楊宗諺','林易澤'] },
+    ],
+    metrics: [
+      { key:'ad_recv_new',  label:'廣告收款今日新增', unit:'元',  hasTarget:false, type:'new'  },
+      { key:'ad_recv_cum',  label:'廣告收款累計',     unit:'元',  hasTarget:false, type:'cum'  },
+      { key:'s2_recv_new',  label:'淺二收款今日新增', unit:'元',  hasTarget:false, type:'new'  },
+      { key:'s2_recv_cum',  label:'淺二收款累計',     unit:'元',  hasTarget:false, type:'cum'  },
+      { key:'orders',       label:'訂單家數',         unit:'家',  hasTarget:false, type:'new'  },
+      { key:'ratio_prod',   label:'佔比產品數',       unit:'家',  hasTarget:false, type:'new'  },
+      { key:'banq_cum',     label:'88宴會口累計',     unit:'口',  hasTarget:false, type:'cum'  },
+      { key:'yang_fam_cum', label:'癢掰掰家數',       unit:'家',  hasTarget:false, type:'cum'  },
+      { key:'yang_grp_cum', label:'癢掰掰口數',       unit:'口',  hasTarget:false, type:'cum'  },
+      { key:'mei_fam_cum',  label:'黴掰掰家數',       unit:'家',  hasTarget:false, type:'cum'  },
+      { key:'mei_grp_cum',  label:'黴掰掰口數',       unit:'口',  hasTarget:false, type:'cum'  },
+    ],
+    fallbackRaw: [
+      {date:'05/21',name:'郭嘉龍',ad_recv_new:0,    ad_recv_cum:0,    s2_recv_new:0,    s2_recv_cum:0,    orders:8,ratio_prod:1,banq_cum:3,  yang_fam_cum:0, yang_grp_cum:0, mei_fam_cum:4, mei_grp_cum:3},
+      {date:'05/21',name:'邱建銘',ad_recv_new:0,    ad_recv_cum:0,    s2_recv_new:0,    s2_recv_cum:0,    orders:7,ratio_prod:2,banq_cum:2.5,yang_fam_cum:4, yang_grp_cum:4, mei_fam_cum:5, mei_grp_cum:6},
+      {date:'05/21',name:'侯福正',ad_recv_new:0,    ad_recv_cum:0,    s2_recv_new:0,    s2_recv_cum:0,    orders:5,ratio_prod:2,banq_cum:2,  yang_fam_cum:3, yang_grp_cum:6, mei_fam_cum:3, mei_grp_cum:4},
+      {date:'05/21',name:'徐宏杰',ad_recv_new:0,    ad_recv_cum:0,    s2_recv_new:0,    s2_recv_cum:0,    orders:6,ratio_prod:2,banq_cum:5.5,yang_fam_cum:7, yang_grp_cum:7, mei_fam_cum:6, mei_grp_cum:7},
+      {date:'05/21',name:'游皓明',ad_recv_new:0,    ad_recv_cum:0,    s2_recv_new:8726, s2_recv_cum:8726, orders:5,ratio_prod:1,banq_cum:11, yang_fam_cum:4, yang_grp_cum:4, mei_fam_cum:3, mei_grp_cum:3},
+      {date:'05/21',name:'范國隆',ad_recv_new:0,    ad_recv_cum:0,    s2_recv_new:0,    s2_recv_cum:0,    orders:3,ratio_prod:1,banq_cum:7,  yang_fam_cum:10,yang_grp_cum:11,mei_fam_cum:12,mei_grp_cum:13},
+      {date:'05/21',name:'林俊毅',ad_recv_new:0,    ad_recv_cum:0,    s2_recv_new:40000,s2_recv_cum:40000,orders:6,ratio_prod:2,banq_cum:10, yang_fam_cum:10,yang_grp_cum:12,mei_fam_cum:12,mei_grp_cum:13},
+      {date:'05/21',name:'張詠順',ad_recv_new:0,    ad_recv_cum:0,    s2_recv_new:0,    s2_recv_cum:0,    orders:7,ratio_prod:1,banq_cum:8,  yang_fam_cum:8, yang_grp_cum:27,mei_fam_cum:9, mei_grp_cum:12},
+      {date:'05/21',name:'楊宗諺',ad_recv_new:0,    ad_recv_cum:0,    s2_recv_new:0,    s2_recv_cum:0,    orders:5,ratio_prod:1,banq_cum:4,  yang_fam_cum:5, yang_grp_cum:5, mei_fam_cum:5, mei_grp_cum:5},
+      {date:'05/21',name:'林易澤',ad_recv_new:0,    ad_recv_cum:0,    s2_recv_new:30000,s2_recv_cum:30000,orders:6,ratio_prod:1,banq_cum:3,  yang_fam_cum:8, yang_grp_cum:11,mei_fam_cum:6, mei_grp_cum:6},
+    ],
+    fallbackTargets: {}
+  }
+};
+
+const REGION_COLORS_POOL = ['#c0152a','#9b1c2e','#e02035','#b91c1c','#7f1d1d','#dc2626'];
+
+// ══════════════════════════════════════════════
+//  狀態
+// ══════════════════════════════════════════════
+let activeDept    = 1;
+let activeMetric  = null;
+let RAW           = [];
+let TARGETS       = {};
+let chartInst     = null;
+let isFallback    = false;
+
+// ══════════════════════════════════════════════
+//  切換部門
+// ══════════════════════════════════════════════
+function switchDept(dept) {
+  activeDept = dept;
+  document.getElementById('deptTab1').classList.toggle('active', dept === 1);
+  document.getElementById('deptTab2').classList.toggle('active', dept === 2);
+  activeMetric = null;
+  document.getElementById('mainContent').innerHTML = '<div class="state-box"><div class="spinner"></div><span>載入資料中...</span></div>';
+  loadData();
+}
+
+// ══════════════════════════════════════════════
+//  資料載入
+// ══════════════════════════════════════════════
+async function loadData() {
+  const cfg = DEPT_CONFIG[activeDept];
+  try {
+    const url = `${APPS_SCRIPT_URL}?dept=${activeDept}&_t=${Date.now()}`;
+    const resp = await fetch(url);
+    const json = await resp.json();
+    RAW      = json.raw || [];
+    TARGETS  = json.targets || {};
+    isFallback = false;
+    if (RAW.length === 0) throw new Error('empty');
+  } catch(e) {
+    RAW      = cfg.fallbackRaw;
+    TARGETS  = cfg.fallbackTargets;
+    isFallback = true;
+  }
+  if (!activeMetric) activeMetric = cfg.metrics[0].key;
+  renderTabs();
+  renderAll();
+  document.getElementById('lastUpdated').textContent =
+    (isFallback ? '[示範] ' : '') + '更新：' + new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ══════════════════════════════════════════════
+//  取值輔助
+// ══════════════════════════════════════════════
+function getNames() {
+  return DEPT_CONFIG[activeDept].regions.flatMap(r => r.names);
+}
+
+function getLatest(name, key) {
+  const rows = RAW.filter(r => r.name === name);
+  if (!rows.length) return 0;
+  return Math.max(...rows.map(r => Number(r[key]) || 0));
+}
+
+function getSum(name, key) {
+  return RAW.filter(r => r.name === name).reduce((a,r) => a + (Number(r[key]) || 0), 0);
+}
+
+function getValue(name, key) {
+  const cfg = DEPT_CONFIG[activeDept];
+  const m   = cfg.metrics.find(x => x.key === key);
+  if (!m) return 0;
+  return m.type === 'cum' ? getLatest(name, key) : getSum(name, key);
+}
+
+function getTarget(name, key) {
+  return (TARGETS[name] && TARGETS[name][key]) ? TARGETS[name][key] : null;
+}
+
+function getLatestDate() {
+  if (!RAW.length) return '—';
+  const dates = RAW.map(r => r.date).filter(Boolean);
+  return dates.length ? dates[dates.length - 1] : '—';
+}
+
+// ══════════════════════════════════════════════
+//  渲染 tabs
+// ══════════════════════════════════════════════
+function renderTabs() {
+  const cfg = DEPT_CONFIG[activeDept];
+  document.getElementById('metricTabs').innerHTML = cfg.metrics.map(m =>
+    `<button class="tab${m.key===activeMetric?' active':''}" onclick="setMetric('${m.key}')">${m.label}</button>`
+  ).join('');
+}
+
+// ══════════════════════════════════════════════
+//  渲染全部
+// ══════════════════════════════════════════════
+function renderAll() {
+  renderCards();
+  renderMain();
+}
+
+// ── cards ──
+function renderCards() {
+  const cfg = DEPT_CONFIG[activeDept];
+  const m   = cfg.metrics.find(x => x.key === activeMetric);
+  if (!m) return;
+  const NAMES = getNames();
+  const latestDate = getLatestDate();
+
+  const fmtRecv = v => v>=10000 ? Math.round(v/10000)+'萬' : v.toLocaleString();
+  const isFirst = cfg.metrics[0].key === activeMetric;
+  const dateCard = isFirst ? `<div class="scard"><div class="scard-label">最新資料日期</div><div class="scard-val" style="font-size:20px">${latestDate}</div><div class="scard-sub">本月累計</div></div>` : '';
+  let html = '';
+  if (m.hasTarget) {
+    const tv  = NAMES.reduce((a,n)=>a+(getValue(n,m.key)||0),0);
+    const tt  = NAMES.reduce((a,n)=>a+(getTarget(n,m.key)||0),0);
+    const pct = tt > 0 ? Math.round(tv/tt*100) : 0;
+    const above = NAMES.filter(n=>{ const v=getValue(n,m.key),t=getTarget(n,m.key); return t&&v>=t; }).length;
+    const avg = NAMES.length ? (tv/NAMES.length).toFixed(1) : 0;
+    html = `
+      <div class="scard"><div class="scard-label">整體達成率</div><div class="scard-val">${pct}%</div><div class="scard-sub">${m.label}</div></div>
+      <div class="scard"><div class="scard-label">已達標人數</div><div class="scard-val">${above}<span style="font-size:16px;color:var(--text3)"> / ${NAMES.length}</span></div><div class="scard-sub">人達目標</div></div>
+      <div class="scard"><div class="scard-label">人均</div><div class="scard-val">${avg}</div><div class="scard-sub">${m.unit} / 人</div></div>
+      ${dateCard}`;
+  } else if (m.unit === '元') {
+    const total = NAMES.reduce((a,n)=>a+getValue(n,m.key),0);
+    const max = Math.max(...NAMES.map(n=>getValue(n,m.key)));
+    const top = NAMES.find(n=>getValue(n,m.key)===max)||'—';
+    const avg = NAMES.length ? Math.round(total/NAMES.length) : 0;
+    html = `
+      <div class="scard"><div class="scard-label">全隊${m.label}</div><div class="scard-val" style="font-size:22px">${fmtRecv(total)}</div><div class="scard-sub">元</div></div>
+      <div class="scard"><div class="scard-label">個人最高</div><div class="scard-val" style="font-size:22px">${fmtRecv(max)}</div><div class="scard-sub">${top}</div></div>
+      <div class="scard"><div class="scard-label">人均</div><div class="scard-val" style="font-size:22px">${fmtRecv(avg)}</div><div class="scard-sub">元 / 人</div></div>
+      <div class="scard"><div class="scard-label">有收款人數</div><div class="scard-val">${NAMES.filter(n=>getValue(n,m.key)>0).length}</div><div class="scard-sub">人</div></div>
+      ${dateCard}`;
+  } else {
+    const total = NAMES.reduce((a,n)=>a+getValue(n,m.key),0);
+    const max = Math.max(...NAMES.map(n=>getValue(n,m.key)));
+    const top = NAMES.find(n=>getValue(n,m.key)===max)||'—';
+    const avg = NAMES.length ? (total/NAMES.length).toFixed(1) : 0;
+    html = `
+      <div class="scard"><div class="scard-label">全隊${m.label}</div><div class="scard-val">${total}</div><div class="scard-sub">${m.unit}（本月）</div></div>
+      <div class="scard"><div class="scard-label">個人最高</div><div class="scard-val">${max}</div><div class="scard-sub">${top}</div></div>
+      <div class="scard"><div class="scard-label">人均</div><div class="scard-val">${avg}</div><div class="scard-sub">${m.unit} / 人</div></div>
+      ${dateCard}`;
+  }
+  document.getElementById('summaryCards').innerHTML = html;
+}
+
+// ── main content ──
+function renderMain() {
+  const cfg   = DEPT_CONFIG[activeDept];
+  const m     = cfg.metrics.find(x => x.key === activeMetric);
+  const NAMES = getNames();
+  const el    = document.getElementById('mainContent');
+  if (chartInst) { chartInst.destroy(); chartInst = null; }
+
+  if (!NAMES.length) {
+    el.innerHTML = `<div class="panel"><p style="color:var(--text3);text-align:center;padding:40px">請先在設定區填入業務名字</p></div>`;
+    return;
+  }
+
+  if (m.hasTarget) {
+    el.innerHTML = `
+      <div class="two-col">
+        <div class="panel"><div class="panel-title">個人達成率</div><div id="progBars"></div></div>
+        <div class="panel"><div class="panel-title">累計值 vs 目標</div><div class="chart-wrap"><canvas id="myChart"></canvas></div></div>
+      </div>`;
+    renderProgressBars(m);
+    renderChart(m);
+  } else {
+    const maxVal = Math.max(...NAMES.map(n => getValue(n,m.key))) || 1;
+    const regions = cfg.regions;
+    const regionRows = regions.map((region, ri) => {
+      const rColor = REGION_COLORS_POOL[ri % REGION_COLORS_POOL.length];
+      const rows = region.names.length === 0
+        ? `<div class="rank-row"><span style="font-size:12px;color:#9ca3af;font-style:italic">${region.vacant||'待補'}</span></div>`
+        : region.names.map(name => {
+            const val = getValue(name, m.key);
+            const dispVal = (m.key==='recv_cum'||m.key==='recv_new')
+              ? 'NT$ '+(val>=10000?Math.round(val/10000)+'萬':val.toLocaleString())
+              : val+' '+m.unit;
+            return `<div class="rank-row">
+              <span class="rank-name">${name}</span>
+              <div class="rank-bar-bg" style="flex:1"><div class="rank-bar" style="width:${Math.round(val/maxVal*100)}%;background:${rColor}"></div></div>
+              <span class="rank-val">${dispVal}</span>
+            </div>`;
+          }).join('');
+      return `<div class="region-block">
+        <div class="region-label" style="border-left:3px solid ${rColor}">${region.label}</div>
+        ${rows}
+      </div>`;
+    }).join('');
+    el.innerHTML = `
+      <div class="panel"><div class="panel-title">${m.label} — 區域明細</div><p class="note">此指標無目標值，僅顯示數字</p>${regionRows}</div>
+      <div class="panel" style="margin-top:16px"><div class="panel-title">長條圖比較</div><div class="chart-wrap"><canvas id="myChart"></canvas></div></div>`;
+    renderChart(m);
+  }
+}
+
+function renderProgressBars(m) {
+  const cfg  = DEPT_CONFIG[activeDept];
+  const el   = document.getElementById('progBars');
+  if (!el) return;
+  el.innerHTML = cfg.regions.map((region, ri) => {
+    const rColor = REGION_COLORS_POOL[ri % REGION_COLORS_POOL.length];
+    const memberRows = region.names.length === 0
+      ? `<div class="prow"><span style="font-size:12px;color:#9ca3af;font-style:italic">${region.vacant||'待補'}</span></div>`
+      : region.names.map(name => {
+          const v = getValue(name, m.key);
+          const t = getTarget(name, m.key);
+          const p = t ? Math.round(v/t*100) : null;
+          const w = p !== null ? Math.min(p,100) : 0;
+          const barColor = p===null?'#d1d5db':p>=100?'#16a34a':p>=70?'#c0152a':'#dc2626';
+          const pClass   = p===null?'badge-none':p>=100?'badge-ok':p>=70?'badge-mid':'badge-low';
+          const pLabel   = p===null?'—':p+'%';
+          const valStr   = t?`${v} / ${t}`:`${v}`;
+          return `<div class="prow">
+            <span class="pname">${name}</span>
+            <div class="pbar-bg"><div class="pbar" style="width:${w}%;background:${barColor}"></div></div>
+            <span class="ppct ${pClass}">${pLabel}</span>
+            <span class="pval">${valStr}</span>
+          </div>`;
+        }).join('');
+    return `<div class="region-block">
+      <div class="region-label" style="border-left:3px solid ${rColor}">${region.label}</div>
+      ${memberRows}
+    </div>`;
+  }).join('');
+}
+
+function renderChart(m) {
+  const canvas = document.getElementById('myChart');
+  if (!canvas) return;
+  const cfg   = DEPT_CONFIG[activeDept];
+  const NAMES = getNames();
+  if (!NAMES.length) return;
+  const vals  = NAMES.map(n => getValue(n,m.key));
+  const COLORS = NAMES.map(name => {
+    const ri = cfg.regions.findIndex(r => r.names.includes(name));
+    return ri >= 0 ? REGION_COLORS_POOL[ri % REGION_COLORS_POOL.length] : '#c0152a';
+  });
+  const tgts  = m.hasTarget ? NAMES.map(n => getTarget(n,m.key)||0) : null;
+  const datasets = [{
+    label:'數值', data:vals,
+    backgroundColor: COLORS.map(c => c+'99'),
+    borderColor: COLORS, borderWidth:1, borderRadius:4,
+  }];
+  if (tgts) datasets.push({
+    label:'目標值', data:tgts,
+    backgroundColor:'transparent', borderColor:'rgba(0,0,0,0.2)',
+    borderWidth:1.5, borderRadius:4,
+  });
+  chartInst = new Chart(canvas, {
+    type:'bar',
+    data:{ labels:NAMES, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false } },
+      scales:{
+        x:{ ticks:{ color:'#9ca3af',font:{size:11},autoSkip:false }, grid:{display:false}, border:{color:'rgba(0,0,0,0.08)'} },
+        y:{ ticks:{ color:'#9ca3af',font:{size:10},
+              callback: v => m.unit==='元'&&v>=10000?Math.round(v/10000)+'萬':v },
+            grid:{color:'rgba(0,0,0,0.05)'}, border:{color:'rgba(0,0,0,0.08)'} }
+      }
+    }
+  });
+}
+
+function setMetric(key) {
+  activeMetric = key;
+  renderTabs();
+  renderAll();
+}
+
+// ── init ──
+loadData();
+</script>
+</body>
+</html>
