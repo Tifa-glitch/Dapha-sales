@@ -465,9 +465,12 @@ async function loadData() {
       s1: { raw: json.s1?.raw || [], targets: json.s1?.targets || {} },
       s2: { raw: json.s2?.raw || [], targets: json.s2?.targets || {} },
     };
+    console.log('[DEBUG] s1筆數:', DATA.s1.raw.length);
+    console.log('[DEBUG] s1第一筆:', JSON.stringify(DATA.s1.raw[0]));
+    console.log('[DEBUG] s2筆數:', DATA.s2.raw.length);
     IS_DEMO = false;
   } catch(e) {
-    console.warn('API 失敗，改用示範資料', e);
+    console.error('[DEBUG] API失敗:', e.message);
     DATA = FALLBACK; IS_DEMO = true;
   }
   renderAll();
@@ -477,3 +480,4 @@ loadData();
 </script>
 </body>
 </html>
+
