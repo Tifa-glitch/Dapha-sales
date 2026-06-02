@@ -207,9 +207,9 @@ body {
 
 <script>
 // ════════════════════════════════════════
-// ① 設定區
+// ① 設定區  ← 部署後填入新網址
 // ════════════════════════════════════════
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1AlWzFMgen6lJ4IXzOwidQpe7pw5PPu96FThLjvOXSDUO2eY34HE564aw1LTQUbWA/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyWKhiVdSeOSwUUpS1BZegQxH_QfN8MLgMHDlmsr7qYCuhRpOGdIjWzjbWnUXBjbFBNvQ/exec';
 
 const DEPT_CONFIG = [
   // ── 淺一部 ──
@@ -266,44 +266,50 @@ const DEPT_CONFIG = [
   },
 ];
 
-// ── Fallback data ──
+// ── Fallback 示範資料 ──
 const FALLBACK = {
   s1: {
     raw: [
-      { date:'05/29', name:'陳俊禹', ad_fam_new:1, ad_fam_cum:6, ad_recv_new:3000, ad_recv_cum:15000, s1_fam_new:1, s1_fam_cum:4, s1_recv_new:2000, s1_recv_cum:10000, orders:3, ratio_prod:2, banq_cum:3, cystine_cum:8,  cystine_box_cum:48 },
-      { date:'05/29', name:'林星樺', ad_fam_new:2, ad_fam_cum:8, ad_recv_new:5000, ad_recv_cum:20000, s1_fam_new:2, s1_fam_cum:5, s1_recv_new:3000, s1_recv_cum:13000, orders:2, ratio_prod:1, banq_cum:2, cystine_cum:12, cystine_box_cum:72 },
-      { date:'05/29', name:'林宗德', ad_fam_new:1, ad_fam_cum:5, ad_recv_new:2000, ad_recv_cum:12000, s1_fam_new:0, s1_fam_cum:3, s1_recv_new:0,    s1_recv_cum:8000,  orders:1, ratio_prod:1, banq_cum:1, cystine_cum:5,  cystine_box_cum:30 },
-      { date:'05/29', name:'陳永翰', ad_fam_new:0, ad_fam_cum:4, ad_recv_new:0,    ad_recv_cum:10000, s1_fam_new:1, s1_fam_cum:3, s1_recv_new:1000, s1_recv_cum:7000,  orders:2, ratio_prod:2, banq_cum:2, cystine_cum:10, cystine_box_cum:60 },
-      { date:'05/29', name:'楊承凱', ad_fam_new:1, ad_fam_cum:3, ad_recv_new:2000, ad_recv_cum:9000,  s1_fam_new:0, s1_fam_cum:2, s1_recv_new:0,    s1_recv_cum:5000,  orders:1, ratio_prod:0, banq_cum:1, cystine_cum:6,  cystine_box_cum:36 },
-      { date:'05/29', name:'賞天佑', ad_fam_new:1, ad_fam_cum:3, ad_recv_new:1500, ad_recv_cum:8000,  s1_fam_new:1, s1_fam_cum:2, s1_recv_new:1000, s1_recv_cum:5000,  orders:2, ratio_prod:1, banq_cum:1, cystine_cum:7,  cystine_box_cum:42 },
-      { date:'05/29', name:'陳坤謨', ad_fam_new:3, ad_fam_cum:9, ad_recv_new:6000, ad_recv_cum:22000, s1_fam_new:2, s1_fam_cum:6, s1_recv_new:4000, s1_recv_cum:16000, orders:4, ratio_prod:3, banq_cum:4, cystine_cum:15, cystine_box_cum:90 },
-      { date:'05/29', name:'魏鴻茂', ad_fam_new:1, ad_fam_cum:5, ad_recv_new:2000, ad_recv_cum:11000, s1_fam_new:1, s1_fam_cum:4, s1_recv_new:1500, s1_recv_cum:9000,  orders:2, ratio_prod:1, banq_cum:2, cystine_cum:9,  cystine_box_cum:54 },
-      { date:'05/29', name:'吳駿宏', ad_fam_new:0, ad_fam_cum:3, ad_recv_new:0,    ad_recv_cum:7000,  s1_fam_new:0, s1_fam_cum:2, s1_recv_new:0,    s1_recv_cum:4000,  orders:1, ratio_prod:0, banq_cum:1, cystine_cum:4,  cystine_box_cum:24 },
-      { date:'05/29', name:'李仲亨', ad_fam_new:2, ad_fam_cum:7, ad_recv_new:4000, ad_recv_cum:17000, s1_fam_new:1, s1_fam_cum:5, s1_recv_new:2000, s1_recv_cum:12000, orders:3, ratio_prod:2, banq_cum:3, cystine_cum:11, cystine_box_cum:66 },
-      { date:'05/29', name:'鄭舜生', ad_fam_new:1, ad_fam_cum:4, ad_recv_new:1500, ad_recv_cum:9000,  s1_fam_new:0, s1_fam_cum:3, s1_recv_new:0,    s1_recv_cum:6000,  orders:1, ratio_prod:1, banq_cum:1, cystine_cum:5,  cystine_box_cum:30 },
-      { date:'05/29', name:'陳志建', ad_fam_new:0, ad_fam_cum:3, ad_recv_new:0,    ad_recv_cum:7000,  s1_fam_new:1, s1_fam_cum:2, s1_recv_new:1000, s1_recv_cum:5000,  orders:1, ratio_prod:0, banq_cum:1, cystine_cum:3,  cystine_box_cum:18 },
+      { date:'06/01', name:'陳俊禹', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s1_fam_new:0, s1_fam_cum:0, s1_recv_new:0, s1_recv_cum:0, orders:6, ratio_prod:1, banq_cum:11.5, cystine_cum:0, cystine_box_cum:0 },
+      { date:'06/01', name:'林星樺', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s1_fam_new:1, s1_fam_cum:1, s1_recv_new:20000, s1_recv_cum:20000, orders:4, ratio_prod:3, banq_cum:3.5, cystine_cum:1, cystine_box_cum:1 },
+      { date:'06/01', name:'林宗德', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s1_fam_new:0, s1_fam_cum:0, s1_recv_new:0, s1_recv_cum:0, orders:4, ratio_prod:1, banq_cum:5, cystine_cum:1, cystine_box_cum:1 },
+      { date:'06/01', name:'陳永翰', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s1_fam_new:0, s1_fam_cum:0, s1_recv_new:0, s1_recv_cum:0, orders:5, ratio_prod:4, banq_cum:5, cystine_cum:0, cystine_box_cum:0 },
+      { date:'06/01', name:'楊承凱', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s1_fam_new:0, s1_fam_cum:0, s1_recv_new:2250, s1_recv_cum:2250, orders:4, ratio_prod:3, banq_cum:0, cystine_cum:0, cystine_box_cum:0 },
+      { date:'06/01', name:'賞天佑', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s1_fam_new:0, s1_fam_cum:0, s1_recv_new:0, s1_recv_cum:0, orders:10, ratio_prod:2, banq_cum:3, cystine_cum:0, cystine_box_cum:0 },
+      { date:'06/01', name:'陳坤謨', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s1_fam_new:1, s1_fam_cum:1, s1_recv_new:60000, s1_recv_cum:60000, orders:4, ratio_prod:1, banq_cum:7.5, cystine_cum:1, cystine_box_cum:1 },
+      { date:'06/01', name:'魏鴻茂', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s1_fam_new:0, s1_fam_cum:0, s1_recv_new:0, s1_recv_cum:0, orders:1, ratio_prod:0, banq_cum:11.5, cystine_cum:0, cystine_box_cum:0 },
+      { date:'06/01', name:'吳駿宏', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s1_fam_new:0, s1_fam_cum:0, s1_recv_new:0, s1_recv_cum:0, orders:5, ratio_prod:0, banq_cum:5.5, cystine_cum:0, cystine_box_cum:0 },
+      { date:'06/01', name:'李仲亨', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s1_fam_new:0, s1_fam_cum:0, s1_recv_new:0, s1_recv_cum:0, orders:8, ratio_prod:2, banq_cum:4.5, cystine_cum:4, cystine_box_cum:5 },
+      { date:'06/01', name:'鄭舜生', ad_fam_new:1, ad_fam_cum:1, ad_recv_new:20000, ad_recv_cum:20000, s1_fam_new:0, s1_fam_cum:0, s1_recv_new:0, s1_recv_cum:0, orders:3, ratio_prod:1, banq_cum:4, cystine_cum:0, cystine_box_cum:0 },
+      { date:'06/01', name:'陳志建', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s1_fam_new:0, s1_fam_cum:0, s1_recv_new:0, s1_recv_cum:0, orders:5, ratio_prod:3, banq_cum:8, cystine_cum:0, cystine_box_cum:0 },
     ],
     targets: {
-      '陳俊禹':{ cystine_cum:18, cystine_box_cum:108 }, '林星樺':{ cystine_cum:18, cystine_box_cum:108 },
-      '林宗德':{ cystine_cum:18, cystine_box_cum:108 }, '陳永翰':{ cystine_cum:18, cystine_box_cum:108 },
-      '楊承凱':{ cystine_cum:18, cystine_box_cum:108 }, '賞天佑':{ cystine_cum:18, cystine_box_cum:108 },
-      '陳坤謨':{ cystine_cum:18, cystine_box_cum:108 }, '魏鴻茂':{ cystine_cum:18, cystine_box_cum:108 },
-      '吳駿宏':{ cystine_cum:18, cystine_box_cum:108 }, '李仲亨':{ cystine_cum:18, cystine_box_cum:108 },
-      '鄭舜生':{ cystine_cum:18, cystine_box_cum:108 }, '陳志建':{ cystine_cum:18, cystine_box_cum:108 },
+      陳俊禹:{ cystine_cum:18, cystine_box_cum:108 },
+      林星樺:{ cystine_cum:18, cystine_box_cum:108 },
+      林宗德:{ cystine_cum:18, cystine_box_cum:108 },
+      陳永翰:{ cystine_cum:18, cystine_box_cum:108 },
+      楊承凱:{ cystine_cum:18, cystine_box_cum:108 },
+      賞天佑:{ cystine_cum:18, cystine_box_cum:108 },
+      陳坤謨:{ cystine_cum:18, cystine_box_cum:108 },
+      魏鴻茂:{ cystine_cum:18, cystine_box_cum:108 },
+      吳駿宏:{ cystine_cum:18, cystine_box_cum:108 },
+      李仲亨:{ cystine_cum:18, cystine_box_cum:108 },
+      鄭舜生:{ cystine_cum:18, cystine_box_cum:108 },
+      陳志建:{ cystine_cum:18, cystine_box_cum:108 },
     }
   },
   s2: {
     raw: [
-      { date:'05/29', name:'郭嘉龍', ad_fam_new:2, ad_fam_cum:7, ad_recv_new:4000, ad_recv_cum:18000, s2_fam_new:1, s2_fam_cum:4, s2_recv_new:2000, s2_recv_cum:11000, orders:3, ratio_prod:2, banq_cum:3, yang_fam_cum:5, yang_grp_cum:10, mei_fam_cum:3, mei_grp_cum:6 },
-      { date:'05/29', name:'邱建銘', ad_fam_new:1, ad_fam_cum:5, ad_recv_new:2000, ad_recv_cum:14000, s2_fam_new:2, s2_fam_cum:5, s2_recv_new:3000, s2_recv_cum:13000, orders:2, ratio_prod:1, banq_cum:2, yang_fam_cum:3, yang_grp_cum:7,  mei_fam_cum:2, mei_grp_cum:4 },
-      { date:'05/29', name:'侯福正', ad_fam_new:0, ad_fam_cum:4, ad_recv_new:0,    ad_recv_cum:10000, s2_fam_new:1, s2_fam_cum:3, s2_recv_new:1000, s2_recv_cum:8000,  orders:1, ratio_prod:1, banq_cum:1, yang_fam_cum:2, yang_grp_cum:5,  mei_fam_cum:1, mei_grp_cum:2 },
-      { date:'05/29', name:'徐宏杰', ad_fam_new:1, ad_fam_cum:3, ad_recv_new:1500, ad_recv_cum:8000,  s2_fam_new:0, s2_fam_cum:2, s2_recv_new:0,    s2_recv_cum:5000,  orders:2, ratio_prod:0, banq_cum:1, yang_fam_cum:1, yang_grp_cum:3,  mei_fam_cum:0, mei_grp_cum:0 },
-      { date:'05/29', name:'游皓明', ad_fam_new:1, ad_fam_cum:4, ad_recv_new:2000, ad_recv_cum:9000,  s2_fam_new:1, s2_fam_cum:3, s2_recv_new:1500, s2_recv_cum:7000,  orders:1, ratio_prod:1, banq_cum:2, yang_fam_cum:2, yang_grp_cum:4,  mei_fam_cum:1, mei_grp_cum:2 },
-      { date:'05/29', name:'范國隆', ad_fam_new:2, ad_fam_cum:6, ad_recv_new:3000, ad_recv_cum:14000, s2_fam_new:1, s2_fam_cum:4, s2_recv_new:2000, s2_recv_cum:9000,  orders:3, ratio_prod:2, banq_cum:2, yang_fam_cum:4, yang_grp_cum:8,  mei_fam_cum:2, mei_grp_cum:4 },
-      { date:'05/29', name:'林俊毅', ad_fam_new:0, ad_fam_cum:3, ad_recv_new:0,    ad_recv_cum:7000,  s2_fam_new:0, s2_fam_cum:2, s2_recv_new:0,    s2_recv_cum:4000,  orders:1, ratio_prod:0, banq_cum:1, yang_fam_cum:1, yang_grp_cum:2,  mei_fam_cum:0, mei_grp_cum:0 },
-      { date:'05/29', name:'張詠順', ad_fam_new:1, ad_fam_cum:5, ad_recv_new:2000, ad_recv_cum:12000, s2_fam_new:1, s2_fam_cum:3, s2_recv_new:1500, s2_recv_cum:8000,  orders:2, ratio_prod:1, banq_cum:2, yang_fam_cum:3, yang_grp_cum:6,  mei_fam_cum:1, mei_grp_cum:2 },
-      { date:'05/29', name:'楊宗諺', ad_fam_new:0, ad_fam_cum:3, ad_recv_new:0,    ad_recv_cum:8000,  s2_fam_new:0, s2_fam_cum:2, s2_recv_new:0,    s2_recv_cum:4500,  orders:1, ratio_prod:1, banq_cum:1, yang_fam_cum:2, yang_grp_cum:4,  mei_fam_cum:1, mei_grp_cum:2 },
-      { date:'05/29', name:'林易澤', ad_fam_new:1, ad_fam_cum:4, ad_recv_new:1500, ad_recv_cum:9000,  s2_fam_new:1, s2_fam_cum:2, s2_recv_new:1000, s2_recv_cum:5000,  orders:2, ratio_prod:0, banq_cum:1, yang_fam_cum:1, yang_grp_cum:3,  mei_fam_cum:0, mei_grp_cum:0 },
+      { date:'06/01', name:'郭嘉龍', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s2_fam_new:0, s2_fam_cum:0, s2_recv_new:3000, s2_recv_cum:3000, orders:9, ratio_prod:1, banq_cum:3, yang_fam_cum:13, yang_grp_cum:14, mei_fam_cum:11, mei_grp_cum:12 },
+      { date:'06/01', name:'邱建銘', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s2_fam_new:0, s2_fam_cum:0, s2_recv_new:0, s2_recv_cum:0, orders:6, ratio_prod:4, banq_cum:2.5, yang_fam_cum:5, yang_grp_cum:5, mei_fam_cum:7, mei_grp_cum:8 },
+      { date:'06/01', name:'侯福正', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s2_fam_new:0, s2_fam_cum:0, s2_recv_new:0, s2_recv_cum:0, orders:8, ratio_prod:2, banq_cum:2, yang_fam_cum:6, yang_grp_cum:10, mei_fam_cum:3, mei_grp_cum:4 },
+      { date:'06/01', name:'徐宏杰', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s2_fam_new:0, s2_fam_cum:0, s2_recv_new:0, s2_recv_cum:0, orders:6, ratio_prod:2, banq_cum:5.5, yang_fam_cum:9, yang_grp_cum:10, mei_fam_cum:9, mei_grp_cum:11 },
+      { date:'06/01', name:'游皓明', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s2_fam_new:0, s2_fam_cum:0, s2_recv_new:0, s2_recv_cum:0, orders:14, ratio_prod:1, banq_cum:11, yang_fam_cum:14, yang_grp_cum:23, mei_fam_cum:7, mei_grp_cum:7 },
+      { date:'06/01', name:'范國隆', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s2_fam_new:1, s2_fam_cum:1, s2_recv_new:140000, s2_recv_cum:140000, orders:11, ratio_prod:2, banq_cum:7, yang_fam_cum:16, yang_grp_cum:18, mei_fam_cum:15, mei_grp_cum:17 },
+      { date:'06/01', name:'林俊毅', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s2_fam_new:0, s2_fam_cum:0, s2_recv_new:0, s2_recv_cum:0, orders:7, ratio_prod:1, banq_cum:10, yang_fam_cum:11, yang_grp_cum:13, mei_fam_cum:16, mei_grp_cum:20 },
+      { date:'06/01', name:'張詠順', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s2_fam_new:0, s2_fam_cum:0, s2_recv_new:39588, s2_recv_cum:39588, orders:7, ratio_prod:3, banq_cum:8, yang_fam_cum:17, yang_grp_cum:40, mei_fam_cum:23, mei_grp_cum:27 },
+      { date:'06/01', name:'楊宗諺', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s2_fam_new:0, s2_fam_cum:0, s2_recv_new:0, s2_recv_cum:0, orders:6, ratio_prod:1, banq_cum:4, yang_fam_cum:7, yang_grp_cum:7, mei_fam_cum:5, mei_grp_cum:5 },
+      { date:'06/01', name:'林易澤', ad_fam_new:0, ad_fam_cum:0, ad_recv_new:0, ad_recv_cum:0, s2_fam_new:0, s2_fam_cum:0, s2_recv_new:0, s2_recv_cum:0, orders:7, ratio_prod:2, banq_cum:3, yang_fam_cum:7, yang_grp_cum:7, mei_fam_cum:9, mei_grp_cum:12 },
     ],
     targets: {}
   }
@@ -377,8 +383,7 @@ function renderAll() {
 
   // 全隊統計
   const vals = allNames.map(n => getValue(raw, n, metric.key, metric.type));
-  const total = metric.type === 'new' ? vals.reduce((a,b) => a+b, 0)
-              : vals.reduce((a,b) => a+b, 0); // sum of latest for overview
+  const total = vals.reduce((a,b) => a+b, 0);
   const maxVal = Math.max(...vals, 0);
   const maxName = allNames[vals.indexOf(maxVal)] || '--';
   const avg = allNames.length ? (total / allNames.length) : 0;
@@ -413,17 +418,16 @@ function renderAll() {
     <div class="detail-title">${metric.label} — 區域明細</div>
     <div class="detail-hint">${hasTarget ? '進度條依達成率顯示' : '此指標無目標值，僅顯示數字'}</div>
     ${dept.regions.map(region => {
-      const rowsHtml = region.names.map(name => {
-        const val = getValue(raw, name, metric.key, metric.type);
+      const regionVals = region.names.map(n => getValue(raw, n, metric.key, metric.type));
+      const regionMax  = Math.max(...regionVals, 1);
+      const rowsHtml = region.names.map((name, ni) => {
+        const val = regionVals[ni];
         const tgt = targets[name] ? (targets[name][metric.key] ?? null) : null;
         const pct = (hasTarget && tgt) ? Math.round(val / tgt * 100) : null;
         const barColor = pct === null  ? '#c0152a'
                        : pct >= 100   ? '#16a34a'
                        : pct >= 70    ? '#c0152a'
                        :                '#dc2626';
-        // bar width: if no target, scale by max val in this region
-        const regionVals = region.names.map(n => getValue(raw, n, metric.key, metric.type));
-        const regionMax  = Math.max(...regionVals, 1);
         const barW = pct !== null ? Math.min(pct, 100)
                    : maxVal > 0 ? Math.round(val / regionMax * 100) : 0;
         return `
@@ -466,9 +470,6 @@ async function loadData() {
       s1: { raw: json.s1?.raw || [], targets: json.s1?.targets || {} },
       s2: { raw: json.s2?.raw || [], targets: json.s2?.targets || {} },
     };
-    console.log('[DEBUG] s1筆數:', DATA.s1.raw.length);
-    console.log('[DEBUG] s1第一筆:', JSON.stringify(DATA.s1.raw[0]));
-    console.log('[DEBUG] s2筆數:', DATA.s2.raw.length);
     IS_DEMO = false;
   } catch(e) {
     console.error('[DEBUG] API失敗:', e.message);
@@ -481,5 +482,6 @@ loadData();
 </script>
 </body>
 </html>
+
 
 
