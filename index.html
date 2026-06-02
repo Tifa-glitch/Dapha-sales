@@ -318,12 +318,13 @@ let currentDept = 0;
 let currentMetric = 0;
 
 // ── 值計算 ──
+function cleanName(n) { return String(n || "").replace(/\s+/g, ""); }
 function getLatest(raw, name, key) {
-  const rows = raw.filter(r => r.name === name).sort((a,b) => b.date.localeCompare(a.date));
+  const rows = raw.filter(r => cleanName(r.name) === cleanName(name)).sort((a,b) => b.date.localeCompare(a.date));
   return rows.length ? (rows[0][key] || 0) : 0;
 }
 function getSum(raw, name, key) {
-  return raw.filter(r => r.name === name).reduce((s,r) => s + (r[key] || 0), 0);
+  return raw.filter(r => cleanName(r.name) === cleanName(name)).reduce((s,r) => s + (r[key] || 0), 0);
 }
 function getValue(raw, name, key, type) {
   return type === 'new' ? getSum(raw, name, key) : getLatest(raw, name, key);
@@ -480,4 +481,5 @@ loadData();
 </script>
 </body>
 </html>
+
 
